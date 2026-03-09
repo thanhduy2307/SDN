@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { fetchQuizzes, createQuiz, updateQuiz, deleteQuiz } from '../store/quizSlice'
+import Swal from 'sweetalert2'
 
 export default function AdminPage() {
   const dispatch = useDispatch()
@@ -36,27 +37,57 @@ export default function AdminPage() {
     try {
       if (editingQuiz) {
         await dispatch(updateQuiz({ quizId: editingQuiz._id, data: form })).unwrap()
-        alert('Cập nhật quiz thành công!')
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công!',
+          text: 'Cập nhật quiz thành công!',
+          timer: 2000,
+          showConfirmButton: false
+        })
       } else {
         await dispatch(createQuiz(form)).unwrap()
-        alert('Tạo quiz mới thành công!')
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công!',
+          text: 'Tạo quiz mới thành công!',
+          timer: 2000,
+          showConfirmButton: false
+        })
       }
       setShowModal(false)
     } catch (err) {
-      alert('Lỗi: ' + err)
+      Swal.fire('Lỗi', 'Có lỗi xảy ra: ' + err, 'error')
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (quizId) => {
-    if (!window.confirm('Bạn có chắc muốn xóa quiz này?')) return
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn?',
+      text: 'Quiz này và tất cả câu hỏi bên trong sẽ bị xóa!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Đồng ý xóa',
+      cancelButtonText: 'Hủy'
+    })
+
+    if (!result.isConfirmed) return
+
     setDeleteId(quizId)
     try {
       await dispatch(deleteQuiz(quizId)).unwrap()
-      alert('Xóa quiz thành công!')
+      Swal.fire({
+        icon: 'success',
+        title: 'Đã xóa!',
+        text: 'Xóa quiz thành công.',
+        timer: 2000,
+        showConfirmButton: false
+      })
     } catch (err) {
-      alert('Lỗi khi xóa quiz: ' + err)
+      Swal.fire('Lỗi', 'Lỗi khi xóa quiz: ' + err, 'error')
     } finally {
       setDeleteId(null)
     }
