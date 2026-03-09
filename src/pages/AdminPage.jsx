@@ -36,8 +36,10 @@ export default function AdminPage() {
     try {
       if (editingQuiz) {
         await dispatch(updateQuiz({ quizId: editingQuiz._id, data: form })).unwrap()
+        alert('Cập nhật quiz thành công!')
       } else {
         await dispatch(createQuiz(form)).unwrap()
+        alert('Tạo quiz mới thành công!')
       }
       setShowModal(false)
     } catch (err) {
@@ -52,6 +54,9 @@ export default function AdminPage() {
     setDeleteId(quizId)
     try {
       await dispatch(deleteQuiz(quizId)).unwrap()
+      alert('Xóa quiz thành công!')
+    } catch (err) {
+      alert('Lỗi khi xóa quiz: ' + err)
     } finally {
       setDeleteId(null)
     }
