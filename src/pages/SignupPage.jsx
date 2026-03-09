@@ -7,7 +7,7 @@ export default function SignupPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { loading, error, token } = useSelector(state => state.auth)
-  const [form, setForm] = useState({ username: '', password: '' })
+  const [form, setForm] = useState({ username: '', password: '', admin: false })
 
   useEffect(() => {
     if (token) navigate('/home')
@@ -59,6 +59,20 @@ export default function SignupPage() {
               required
               minLength={3}
             />
+          </div>
+          <div className="mb-4 form-check d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              name="admin"
+              className="form-check-input mt-0"
+              id="adminCheck"
+              checked={form.admin}
+              onChange={e => setForm({ ...form, admin: e.target.checked })}
+              style={{ cursor: 'pointer' }}
+            />
+            <label className="form-check-label" htmlFor="adminCheck" style={{ cursor: 'pointer', fontWeight: 500 }}>
+              Đăng ký quyền Quản trị viên (Admin)
+            </label>
           </div>
           <button type="submit" className="btn-primary-custom" disabled={loading}>
             {loading ? (
